@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <math.h>
 
-//#define DEBUG
 #define SPLIT_NUM		(20)
 #define SPLIT_LENGTH	(3)
 #define ERR_COUNT_MAX	(15)
@@ -41,15 +40,6 @@ Answer* calc( int alpha, int beta, int ganma, Answer *ans ){
 	float pos_shousuu;	//
 
 	neg_shousuu = modff( b, &f );
-
-#ifdef DEBUG
-	printf( "neg_shousuu\t:%f\n", neg_shousuu );
-	printf( "pos_shousuu\t:%f\n", pos_shousuu );
-	printf( "a\t:%f\n", a );
-	printf( "b\t:%f\n", b );
-	printf( "pos_ret\t:%f\n", pos_ret );
-	printf( "neg_ret\t:%f\n", neg_ret );
-#endif
 
 	//小数部がなくなるまで答えを倍にしていく
 	while( (neg_shousuu = modff( b, &f )) != 0 ){
@@ -120,16 +110,11 @@ int main( int argv, char** argc ){
 					break;
 
 				//対象となる文字だったら
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
+				case '0': case '1':
+				case '2': case '3':
+				case '4': case '5':
+				case '6': case '7':
+				case '8': case '9':
 				case '-':
 					//配列にコピー
 					in_strs[i][j] = *p;
@@ -165,12 +150,12 @@ int main( int argv, char** argc ){
 	}	//end of コマンドライン引数解釈-----
 
 	//実際の計算実行
-	if( calc( alpha, beta, ganma, &ans) == NULL ){
-		printf("エラー\n");
-		return 1;
-	}else{
+	if( calc( alpha, beta, ganma, &ans) != NULL ){
 		printf( "%d,%d,%d,%d\n", ans.a, ans.b, ans.c, ans.d );
 		return 0;
+	}else{
+		printf("エラー\n");
+		return 1;
 	}
 }
 
