@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define DEBUG
+//#define DEBUG
 #define SPLIT_NUM		(20)
 #define SPLIT_LENGTH	(3)
 #define ERR_COUNT_MAX	(15)
@@ -87,87 +87,89 @@ Answer* calc( int alpha, int beta, int ganma, Answer *ans ){
 }
 
 int main( int argv, char** argc ){
-
-	//コマンドライン引数解釈--------------------
-	char in_strs[ SPLIT_NUM ][ SPLIT_LENGTH ] = { 0 };	//split用
-	char* p  = argc[ 1 ];		//
-
-	//コマンドライン引数が存在すれば実行
-	if( p ){
-		int i = 0;
-		int j = 0;
-		int err_count = 0;
-
-		while( i < SPLIT_NUM && err_count < ERR_COUNT_MAX && *p != 0 ){
-			switch( *p ){
-			//スプリット記号だったら
-			case ',':
-				//エスケープ記号入れて
-				in_strs[i][j] = 0;
-				//次の配列要素に以降
-				j = 0;
-				i++;
-				break;
-
-			//対象となる文字だったら
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '-':
-				//配列にコピー
-				in_strs[i][j] = *p;
-				j++;
-				break;
-
-			//何もしない
-			default:
-				break;
-			}
-
-			//10文字以内でないとエスケープ
-			err_count++;
-			p++;
-		}
-
-#ifdef DEBUG
-		{
-			int i;	//カウンタ
-			for( i = 0 ; i < SPLIT_NUM; ++i )
-				printf( "%s\n", in_strs[ i ] );
-
-			printf( "______________\n\n" );
-		}
-#endif
-	}
-
-	//αx2+βx＋γ
+	//αx2+βx＋γ。適当な組み合わせで初期化しておく
 	int alpha	= 6;	//α
 	int beta	= -1;	//β
 	int ganma	= -15;	//γ
-
-	if( p ){
-		alpha	= atoi( in_strs[0] );
-		beta	= atoi( in_strs[1] );
-		ganma	= atoi( in_strs[2] );
-	}
 
 	//答え用構造体初期化
 	Answer ans = {
 		0, 0, 0, 0,
 	};
 
+	//コマンドライン引数解釈--------------------
+	{
+		char in_strs[ SPLIT_NUM ][ SPLIT_LENGTH ] = { 0 };	//split用
+		char* p  = argc[ 1 ];		//
+
+		//コマンドライン引数が存在すれば実行
+		if( p ){
+			int i = 0;
+			int j = 0;
+			int err_count = 0;
+
+			while( i < SPLIT_NUM && err_count < ERR_COUNT_MAX && *p != 0 ){
+				switch( *p ){
+				//スプリット記号だったら
+				case ',':
+					//エスケープ記号入れて
+					in_strs[i][j] = 0;
+					//次の配列要素に以降
+					j = 0;
+					i++;
+					break;
+
+				//対象となる文字だったら
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case '-':
+					//配列にコピー
+					in_strs[i][j] = *p;
+					j++;
+					break;
+
+				//何もしない
+				default:
+					break;
+				}
+
+				//10文字以内でないとエスケープ
+				err_count++;
+				p++;
+			}
+
+#ifdef DEBUG
+			{
+				int i;	//カウンタ
+				for( i = 0 ; i < SPLIT_NUM; ++i )
+					printf( "%s\n", in_strs[ i ] );
+
+				printf( "______________\n\n" );
+			}
+#endif
+
+			//最後に値をセット
+			alpha	= atoi( in_strs[0] );
+			beta	= atoi( in_strs[1] );
+			ganma	= atoi( in_strs[2] );
+
+		}
+	}	//end of コマンドライン引数解釈-----
+
+	//実際の計算実行
 	if( calc( alpha, beta, ganma, &ans) == NULL ){
-		printf("計算失敗!!\n");
+		printf("エラー\n");
 		return 1;
 	}else{
-		printf("%d,%d,%d,%d\n", ans.a,ans.b,ans.c,ans.d);
+		printf( "%d,%d,%d,%d\n", ans.a, ans.b, ans.c, ans.d );
 		return 0;
 	}
 }
