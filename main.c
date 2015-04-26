@@ -10,7 +10,7 @@
 #define DEBUG
 #define SPLIT_NUM		(20)
 #define SPLIT_LENGTH	(3)
-
+#define ERR_COUNT_MAX	(15)
 
 /**
  *	@brief	答え用構造体
@@ -98,17 +98,37 @@ int main( int argv, char** argc ){
 		int j = 0;
 		int err_count = 0;
 
-		while( i < SPLIT_NUM && err_count < 10 && *p != 0 ){
+		while( i < SPLIT_NUM && err_count < ERR_COUNT_MAX && *p != 0 ){
+			switch( *p ){
 			//スプリット記号だったら
-			if(*p == ','){
+			case ',':
+				//エスケープ記号入れて
 				in_strs[i][j] = 0;
+				//次の配列要素に以降
 				j = 0;
 				i++;
-			}else if( (*p >= '0' && *p <= '9' ) || *p == '-' ){
+				break;
+
+			//対象となる文字だったら
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '-':
+				//配列にコピー
 				in_strs[i][j] = *p;
 				j++;
-			}else{
-				//それ以外の文字記号はシカト
+				break;
+
+			//何もしない
+			default:
+				break;
 			}
 
 			//10文字以内でないとエスケープ
